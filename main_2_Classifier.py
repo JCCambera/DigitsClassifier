@@ -7,7 +7,7 @@ import random
 from sklearn import datasets, svm, metrics
 import numpy as np
 from PIL import Image, ImageDraw, ImageTk
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 class DigitsClassifier:
@@ -85,7 +85,7 @@ class DigitsClassifier:
         # Creates a classifier based on Support Vector Machine Algorithm
 
         #self.classifier_svm = svm.SVC(gamma=0.0000001)
-        # self.classifier_svm = svm.SVC(gamma=0.0000001) #Working
+        self.classifier_svm = svm.SVC(gamma=0.0000001) #Working
         self.classifier_svm.fit(self.images_training_flatted, self.labels_training)
 
     def classify_SVM(self,image):
@@ -99,6 +99,10 @@ class DigitsClassifier:
         print('Label expected:  '+str(label_test) +', Label identified: '+str(label_id))
         print('Max Value', image_test_flatted.max())
         # print(image_test_flatted)
+    def getRandomImage(self):
+        idx_random = random.randint(0, self.test_set_length)
+        # return self.images_testing_flatted[idx_random]
+        return self.images_testing[idx_random]
 
     def loadImage(self,file_name):
             img = Image.open(file_name)
@@ -111,6 +115,7 @@ class DigitsClassifier:
 
     def flattenImage(self,image):
         return np.reshape(image,image.shape[0]*image.shape[1])
+
     def classifyImage(self,file_name):
 
         image = self.loadImage(file_name)
@@ -129,6 +134,6 @@ class DigitsClassifier:
 
 
 
-digitsClassifier = DigitsClassifier()
-digitsClassifier.classifyImage("number_resized.png")
-digitsClassifier.testRandomImage()
+# digitsClassifier = DigitsClassifier()
+# digitsClassifier.classifyImage("number_resized.png")
+# digitsClassifier.testRandomImage()

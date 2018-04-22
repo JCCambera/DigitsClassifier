@@ -1,13 +1,15 @@
+from main_2_Classifier import *
+
 import tkinter as Tk
 from tkinter import ttk
 import PIL
 from PIL import Image, ImageDraw, ImageTk
 
-import numpy as np
-import matplotlib
+# import numpy as np
+# import matplotlib
 
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
+# matplotlib.use('TkAgg')
+# import matplotlib.pyplot as plt
 
 color_white = (255, 255, 255)
 color_black = (0, 0, 0)
@@ -73,8 +75,15 @@ class MainWindow():
         self.canvas_1.bind("<ButtonRelease-1>", self.on_mouse_lb_released)
 
         # Saving the files in the
-
         self.image_2_save = Image.new("RGB", (width_canvas, height_canvas), color_white)
+
+        # Create a digit classifier
+        digitsClassifier = DigitsClassifier()
+        digitsClassifier.testRandomImage()
+
+        image_test_1 = digitsClassifier.getRandomImage()
+        print(type(image_test_1))
+        print(image_test_1.shape)
 
     def on_btn1_save(self):
         print('saving')
@@ -96,13 +105,28 @@ class MainWindow():
         image_2_save_resized = image_2_save.resize([width_image_low_res, height_image_low_res], PIL.Image.ANTIALIAS)
         image_2_save_resized.save(file_name_resized)
 
-
-
+    def canvas_2_load_image(self,np_image):
+        #<Convert from numpy array to PIL image
+         # Resize the image
+         # Conver to TK image
+         # To show in the canvas
+        print("Hello")
+    def loadImage_PIL(self,file_name):
+        image_1 = Image.open(file_name_resized)
+        image_1.load()
+        image_1_resized = image_1.resize((width_canvas, height_canvas))
+        image_1_data_np = np.asarray(image_1_resized, dtype="int32")
+        
     def on_btn2_ld_preprocess_img(self):
-        print('preprocessing')
+        # print('preprocessing')
 
         image_1 = Image.open(file_name_resized)
+        print("Type image: ",type(image_1))
+        image_1.load()
+        print("Type image: ", type(image_1))
         image_1_resized = image_1.resize((width_canvas, height_canvas))
+        image_1_data_np = np.asarray(image_1_resized, dtype="int32")
+        print("Type data: ", type(image_1_data_np))
         photo_1 = ImageTk.PhotoImage(image_1_resized)
 
         self.img_label_canvas_2.config(image=photo_1)
