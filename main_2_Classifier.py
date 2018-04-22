@@ -6,13 +6,15 @@ from math import sqrt
 import random
 from sklearn import datasets, svm, metrics
 import numpy as np
+from PIL import Image, ImageDraw, ImageTk
+import matplotlib.pyplot as plt
+
 
 class DigitsClassifier:
     def __init__(self):
 
         self.training_set_length = 600
         self.test_set_length = 200
-
 
         # self.load_DigitsData_ScikitLearn()
         self.load_DigitsTrainningData()
@@ -57,17 +59,17 @@ class DigitsClassifier:
         self.images_testing_flatted = self.normalizeImages(self.images_testing_flatted)
 
 
-        print(self.images_training_flatted.shape)
-        print(self.images_testing_flatted.shape)
+        # print(self.images_training_flatted.shape)
+        # print(self.images_testing_flatted.shape)
 
         # Definition of the flatten versions
         height_width_image_set = round(sqrt(self.images_training_flatted.shape[1]))
         length_training_set = self.images_training_flatted.shape[0]
         length_testing_set = self.images_testing_flatted.shape[0]
-        print('Here')
-        print(height_width_image_set)
-        print(length_training_set)
-        print(length_testing_set )
+        # print('Here')
+        # print(height_width_image_set)
+        # print(length_training_set)
+        # print(length_testing_set )
 
 
         self.images_training = np.reshape(self.images_training_flatted, [length_training_set,height_width_image_set,height_width_image_set])
@@ -82,8 +84,8 @@ class DigitsClassifier:
     def classifierDef_SVM(self,training_set_length):
         # Creates a classifier based on Support Vector Machine Algorithm
 
-        # self.classifier_svm = svm.SVC(gamma=0.001)
-        self.classifier_svm = svm.SVC(gamma=0.0000001)
+        #self.classifier_svm = svm.SVC(gamma=0.0000001)
+        # self.classifier_svm = svm.SVC(gamma=0.0000001) #Working
         self.classifier_svm.fit(self.images_training_flatted, self.labels_training)
 
     def classify_SVM(self,image):
@@ -96,8 +98,37 @@ class DigitsClassifier:
         label_id = self.classify_SVM(image_test_flatted)
         print('Label expected:  '+str(label_test) +', Label identified: '+str(label_id))
         print('Max Value', image_test_flatted.max())
-        print(image_test_flatted)
+        # print(image_test_flatted)
+
+    def loadImage(self,file_name):
+            img = Image.open(file_name)
+            img.load()
+            img = img.convert('L')  # convert image to monochrome - this works
+            img = img.convert('1')  # convert image to black and white
+            img.show()
+            data = np.asarray(img, dtype="int32")
+            return data
+
+    def flattenImage(self,image):
+        return np.reshape(image,image.shape[0]*image.shape[1])
+    def classifyImage(self,file_name):
+
+        image = self.loadImage(file_name)
+        print('Tipo')
+        print(type(image))
+        normalize_image = self.normalizeImages(image)
+        flatted_image = self.flattenImage(normalize_image)
+        print(normalize_image.shape)
+        print(flatted_image.shape)
+        label_id = self.classify_SVM(flatted_image)
+        # plt.imshow(normalize_image, cmap="gray")
+        # plt.show()
+
+        print('Label identified: ' + str(label_id))
+        print(flatted_image)
+
 
 
 digitsClassifier = DigitsClassifier()
+digitsClassifier.classifyImage("number_resized.png")
 digitsClassifier.testRandomImage()

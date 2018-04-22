@@ -16,10 +16,10 @@ color_green = (255, 0, 0)
 width_canvas = 400
 height_canvas = 400
 
-width_image_low_res = 20
-height_image_low_res = 20
+width_image_low_res = 28
+height_image_low_res = 28
 
-pen_width = 40
+pen_width = 60
 
 width_application = 600 * 2
 height_application = 600 * 2
@@ -86,12 +86,16 @@ class MainWindow():
             xy = [point[0] - pen_width / 2, point[1] - pen_width / 2, point[0] + pen_width / 2,
                 point[1] + pen_width / 2]
             draw_obj.ellipse(xy, fill='black', outline=None)
+        #
+        draw_obj
+
         # saving the regular image
         image_2_save.save(file_name)
 
         # saving the scaled image
         image_2_save_resized = image_2_save.resize([width_image_low_res, height_image_low_res], PIL.Image.ANTIALIAS)
         image_2_save_resized.save(file_name_resized)
+
 
 
     def on_btn2_ld_preprocess_img(self):
