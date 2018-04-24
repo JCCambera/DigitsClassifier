@@ -1,4 +1,5 @@
 from main_2_Classifier import *
+from main_3_ImageProcessing import *
 
 import tkinter as Tk
 from tkinter import ttk
@@ -21,7 +22,7 @@ height_canvas = 400
 width_image_low_res = 28
 height_image_low_res = 28
 
-pen_width = 60
+pen_width = 45
 
 width_application = 600 * 2
 height_application = 600 * 2
@@ -78,12 +79,13 @@ class MainWindow():
         self.image_2_save = Image.new("RGB", (width_canvas, height_canvas), color_white)
 
         # Create a digit classifier
-        digitsClassifier = DigitsClassifier()
-        digitsClassifier.testRandomImage()
+        self.digitsClassifier = DigitsClassifier()
+        self.digitsClassifier.printClassifierPerformance()
 
-        image_test_1 = digitsClassifier.getRandomImage()
-        print(type(image_test_1))
-        print(image_test_1.shape)
+        # digitsClassifier.testRandomImage()
+        # image_test_1 = digitsClassifier.getRandomImage()
+        # print(type(image_test_1))
+        # print(image_test_1.shape)
 
     def on_btn1_save(self):
         print('saving')
@@ -118,7 +120,6 @@ class MainWindow():
         image_1_data_np = np.asarray(image_1_resized, dtype="int32")
         
     def on_btn2_ld_preprocess_img(self):
-        # print('preprocessing')
 
         image_1 = Image.open(file_name_resized)
         print("Type image: ",type(image_1))
@@ -146,9 +147,23 @@ class MainWindow():
         self.mouse_lb_pressed = False
 
     def on_btn3_classify(self):
+        print("file name resized: ",file_name_resized)
+        label_num = self.digitsClassifier.classifyImage(file_name_resized)
+        print("label identified: ", label_num)
 
-        self.img_label_canvas_3.config(image=self.img_label_canvas_3.img_1)
-        self.img_label_canvas_3.config(text='Classified')
+        label_text = {
+            1: 'ONE',
+            2: 'TWO',
+            3: 'THREE',
+            4: 'FOUR',
+            5: 'FIVE',
+            6: 'SIX',
+            7: 'SEVEN',
+            8: 'EIGHT',
+            9: 'NINE',
+            10: 'TEN',
+        }.get(label_num, 'FAILED')
+        self.img_label_canvas_3.config(text=label_text)
                 
 
 root = Tk.Tk()
