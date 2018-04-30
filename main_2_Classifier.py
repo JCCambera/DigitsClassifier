@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageTk
 # import matplotlib.pyplot as plt
 from main_3_ImageProcessing import *
+import os
 
 class DigitsClassifier:
     def __init__(self):
@@ -137,6 +138,13 @@ class DigitsClassifier:
     def flattenImage(self,image):
         return np.reshape(image,image.shape[0]*image.shape[1])
 
+    def classify_NP_image(self,NP_image):
+
+            NP_image = np.invert(NP_image)
+            NP_image_flat = ImageProcessing.flat_NP_image(NP_image)
+
+            return self.classify_SVM(NP_image_flat)
+
     def classifyImage(self,file_name):
 
         PIL_image = ImageProcessing.load_Image_PIL_BW(file_name)
@@ -162,7 +170,7 @@ class DigitsClassifier:
 
     def saveRandomImage(self):
 
-        idx_random = random.randint(0,self.test_set_length)
+        idx_random = random.randint(0,self.test_set_length-1)
         NP_image = self.images_testing[idx_random]
         NP_image = np.uint8(NP_image)
         NP_image =  np.invert(NP_image)
@@ -177,9 +185,35 @@ class DigitsClassifier:
         PIL_image.show()
         ImageProcessing.save_PIL(PIL_image,'image_test.png')
 
+    def generate_N_images(self,n):
+        directory = 'originalDB'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        # Save how many values has been created from each number
+        label_dict = dict(zip(range(10), np.zeros(10, dtype=int)))
+
+        for i in range(n):
+            # Selection of the image
+            idx_random = random.randint(0, self.test_set_length)
+            NP_image = self.images_testing[idx_random]
+            label = self.labels_testing[idx_random]
+            # Conversion to the right format
+            NP_image = np.uint8(NP_image)
+            NP_image = np.invert(NP_image)
+            PIL_image = ImageProcessing.convert_NP_2_PIL(NP_image)
+            # PIL_image.show()
+
+            file_name = directory + '/' + str(label)+'_' + str(label_dict[label])+'.png'
+            label_dict[label] = label_dict[label] +1
+
+            ImageProcessing.save_PIL(PIL_image, file_name)
+
+
+
 
 if __name__ == '__main__':
     digitsClassifier = DigitsClassifier()
+    digitsClassifier.generate_N_images(100)
     # digitsClassifier.classifyImage("number_resized.png")
     # digitsClassifier.saveRandomImage()
     # digitsClassifier.classifyImage("image_test.png")
